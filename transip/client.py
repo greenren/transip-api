@@ -56,7 +56,7 @@ def convert_value(value):
 class SudsFilter(DocumentPlugin):
     def loaded(self, context):
         document = context.document
-        context.document = document.replace('xsd:array', 'tns:ArrayOfstring')
+        context.document = document.replace('xsd:array', 'tns:ArrayOfstring').encode()
 
 class Client(object):
     """
