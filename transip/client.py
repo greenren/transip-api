@@ -53,6 +53,10 @@ def convert_value(value):
 
     return value
 
+class SudsFilter(DocumentPlugin):
+    def loaded(self, context):
+        document = context.document
+        context.document = document.replace('xsd:array', 'tns:ArrayOfstring')
 
 class Client(object):
     """
@@ -89,12 +93,6 @@ class Client(object):
             suds_kwargs['transport'] = suds_requests.RequestsTransport()
 
         self.soap_client = SudsClient(self.url, doctor=doc, plugins=[SudsFilter()], **suds_kwargs)
-
-    class SudsFilter(DocumentPlugin):
-        def loaded(self, context):
-            print context
-            document = context.document
-            context.document = document.replace('xsd:array', 'tns:ArrayOfstring')
 
     def _sign(self, message):
         """ Uses the decrypted private key to sign the message. """
