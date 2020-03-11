@@ -80,8 +80,9 @@ class Client(object):
         self.endpoint = endpoint
         self.url = URI_TEMPLATE.format(endpoint, service_name)
 
-        imp = Import('http://schemas.xmlsoap.org/soap/encoding/')
-        doc = ImportDoctor(imp)
+        imp_soap = Import('http://schemas.xmlsoap.org/soap/encoding/')
+        imp_w3 = Import('http://www.w3.org/2001/XMLSchema')
+        doc = ImportDoctor(imp_soap, imp_w3)
 
         suds_kwargs = dict()
         if suds_requests:
