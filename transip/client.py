@@ -17,6 +17,7 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from suds.client import Client as SudsClient
 from suds.sudsobject import Object as SudsObject
 from suds.xsd.doctor import Import, ImportDoctor
+from suds.plugin import DocumentPlugin
 
 from . import __version__
 
@@ -80,15 +81,20 @@ class Client(object):
         self.endpoint = endpoint
         self.url = URI_TEMPLATE.format(endpoint, service_name)
 
-        imp_soap = Import('http://schemas.xmlsoap.org/soap/encoding/')
-        imp_w3 = Import('http://www.w3.org/2001/XMLSchema')
-        doc = ImportDoctor(imp_soap, imp_w3)
+        imp = Import('http://schemas.xmlsoap.org/soap/encoding/')
+        doc = ImportDoctor(imp)
 
         suds_kwargs = dict()
         if suds_requests:
             suds_kwargs['transport'] = suds_requests.RequestsTransport()
 
-        self.soap_client = SudsClient(self.url, doctor=doc, **suds_kwargs)
+        self.soap_client = SudsClient(self.url, doctor=doc, plugins=[SudsFilter()], **suds_kwargs)
+
+    class SudsFilter(DocumentPlugin):
+        def loaded(self, context):
+            print context
+            document = context.document
+            context.document = document.replace('xsd:array', 'tns:ArrayOfstring')
 
     def _sign(self, message):
         """ Uses the decrypted private key to sign the message. """
