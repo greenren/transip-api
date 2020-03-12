@@ -54,9 +54,19 @@ def convert_value(value):
     return value
 
 class SudsFilter(DocumentPlugin):
+    """
+    A SudsFilter to fix wsdl document before it is parsed.
+    """
+    def __init__(self):
+        pass
+
     def loaded(self, context):
+        # pylint: disable=R0201
+        """
+        Replaces an invalid type in the wsdl document with a validy type.
+        """
         document = context.document
-        context.document = document.replace('xsd:array', 'tns:ArrayOfstring').encode()
+        context.document = document.decode().replace('xsd:array', 'tns:ArrayOfstring')
 
 class Client(object):
     """
