@@ -66,7 +66,7 @@ class SudsFilter(DocumentPlugin):
         Replaces an invalid type in the wsdl document with a validy type.
         """
         document = context.document
-        context.document = document.decode().replace('xsd:array', 'tns:ArrayOfstring')
+        context.document = document.decode().replace('xsd:array', 'tns:ArrayOfstring').encode()
 
 class Client(object):
     """
